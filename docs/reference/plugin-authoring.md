@@ -283,7 +283,9 @@ A panel needs no `contributes.events` entry for that; it subscribes while it is 
 To show the workspace's agents, list them once with `agents.list` (`agent:read`), then follow
 `agent.status.changed`. Both name each agent's terminal with `terminalId`, the id
 `workspace.readContext` lists (with each terminal's `title`) and `terminal.sendText` takes; an
-event's `paneKey` is Orca's own pane id. `workspace.changed` (`workspace:read`) carries the new
+event's `paneKey` is Orca's own pane id. `agents.list` takes a `workspaceId` from `workspace.list`
+to list another workspace's agents (host API 1.6), and a worker with `workspace:write` can bring
+one agent's terminal to the front with `terminal.focus`. `workspace.changed` (`workspace:read`) carries the new
 `workspace.readContext` answer whenever focus moves to another workspace or its terminals open,
 close or are renamed, and once right when a panel or worker subscribes, so a panel never polls
 and never starts out stale.

@@ -27,7 +27,7 @@ export function pluginCapabilityDescription(
     case 'agent:read':
       return t(
         'auto.components.settings.PluginConsentDialog.capability.agentsRead',
-        'Get notified when agent status changes'
+        'See your agents and get notified when their status changes'
       )
     case 'terminal:send':
       return t(
@@ -42,7 +42,7 @@ export function pluginCapabilityDescription(
     case 'workspace:write':
       return t(
         'auto.components.settings.PluginConsentDialog.capability.workspaceWrite',
-        'Open your workspaces and files, and run built-in commands'
+        'Open your workspaces, terminals and files, and run built-in commands'
       )
     case 'agent:launch':
       return t(

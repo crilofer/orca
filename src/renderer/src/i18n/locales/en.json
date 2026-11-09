@@ -12364,10 +12364,10 @@
             "storage": "Store its own data",
             "secrets": "Store its own encrypted secrets",
             "settingsOwn": "Read and change its own settings",
-            "agentsRead": "Get notified when agent status changes",
+            "agentsRead": "See your agents and get notified when their status changes",
             "terminalRun": "Run commands in your terminals, including SSH",
             "terminalRead": "Read the output of your terminals, including SSH",
-            "workspaceWrite": "Open your workspaces and files, and run built-in commands",
+            "workspaceWrite": "Open your workspaces, terminals and files, and run built-in commands",
             "agentLaunch": "Start agents in your workspaces, including SSH"
           },
           "decisionFailed": "Could not save the permission decision. Try again.",

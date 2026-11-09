@@ -72,6 +72,8 @@ const terminalReadAnswer = z.object({
 const agentLaunchAnswer = z.object({
   outcome: z.object({ kind: z.enum(['structured', 'terminal']), handle: z.string() })
 })
+const worktreeShowAnswer = z.object({ worktree: z.object({ id: z.string() }) })
+const terminalFocusAnswer = z.object({ focus: z.object({ navigated: z.boolean() }) })
 
 function renderer(services: PluginHostServices): PluginHostRendererActions {
   if (!services.renderer) {
@@ -103,6 +105,20 @@ function effect(ctx: PluginHostMethodContext, method: string, params: unknown): 
  */
 function workspaceSelector(workspaceId: string): string {
   return workspaceId.startsWith('identity:') ? workspaceId : `id:${workspaceId}`
+}
+
+/** The runtime's worktree id behind a listed workspace id; rejects with the runtime's error when none has it. */
+export async function listedWorkspaceWorktreeId(
+  services: PluginHostServices,
+  workspaceId: string,
+  signal?: AbortSignal
+): Promise<string> {
+  const answer = await rpc(services)(
+    'worktree.show',
+    { worktree: workspaceSelector(workspaceId), matchFolderWorkspaces: true },
+    signal ? { signal } : {}
+  )
+  return worktreeShowAnswer.parse(answer).worktree.id
 }
 
 /** `refs/heads/main` reads as `main`; a detached or folder workspace has none. */
@@ -224,6 +240,11 @@ export const PLUGIN_WORKSPACE_ACTION_HANDLERS = {
       // `limited`: the runtime itself kept only the newest lines.
       truncated: truncated === true || limited === true || tail.length > limit
     }
+  }),
+  'terminal.focus': bind(api['terminal.focus'], async ({ terminalId }, ctx) => {
+    // Unlike a launch, this is the person asking through the plugin, so the window may move.
+    const answer = await effect(ctx, 'terminal.focus', { terminal: terminalId, navigation: 'host' })
+    return { navigated: terminalFocusAnswer.parse(answer).focus.navigated }
   }),
   'agent.launch': bind(api['agent.launch'], async (params, ctx) => {
     const worktree = workspaceSelector(params.workspaceId)

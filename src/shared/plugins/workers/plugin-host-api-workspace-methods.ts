@@ -107,6 +107,9 @@ const terminalReadResult = z.object({
   truncated: z.boolean()
 })
 
+const terminalFocusParams = z.strictObject({ terminalId })
+const terminalFocusResult = z.object({ navigated: z.boolean() })
+
 const agentLaunchParams = z.strictObject({
   workspaceId,
   /** An agent Orca knows: `claude`, `codex`, `gemini`, ... */
@@ -199,6 +202,17 @@ export const PLUGIN_WORKSPACE_ACTIONS_API = {
     surfaces: WORKER_ONLY,
     params: terminalReadParams,
     result: terminalReadResult
+  }),
+  'terminal.focus': spec({
+    summary:
+      "Shows a terminal in Orca's window, as clicking its tab does: its workspace comes to the front and its pane takes focus. `navigated` is false when no window shows that host.",
+    since: 6,
+    scope: 'explicit-terminal',
+    capability: 'workspace:write',
+    mutation: true,
+    surfaces: WORKER_ONLY,
+    params: terminalFocusParams,
+    result: terminalFocusResult
   }),
   'agent.launch': spec({
     summary:

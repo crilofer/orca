@@ -69,8 +69,8 @@ export const PLUGIN_CAPABILITY_DESCRIPTIONS: Record<PluginCapabilityKind, string
   'workspace:read':
     'Read the name, branch, and terminal list of your focused workspace, and get notified when workspaces are created or removed',
   'workspace:write':
-    'Open and rename your workspaces, open their files in Orca, and run its built-in commands',
-  'agent:read': 'Get notified when agent status changes',
+    'Open and rename your workspaces, show their terminals and files in Orca, and run its built-in commands',
+  'agent:read': 'See the agents in your workspaces and get notified when their status changes',
   'agent:launch': 'Start agents in your workspaces, local and SSH',
   'terminal:send': 'Type and run commands in your terminals, local and SSH',
   'terminal:read': 'Read the output of your terminals, local and SSH',

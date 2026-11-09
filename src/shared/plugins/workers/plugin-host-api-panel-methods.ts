@@ -16,7 +16,12 @@ const pluginRequestParams = z.strictObject({
 const pluginRequestResult = z.object({ output: z.json() })
 
 export const PLUGIN_AGENT_LIST_LIMIT = 50
-const agentsListParams = z.strictObject({}).optional()
+const agentsListParams = z
+  .strictObject({
+    /** A workspace as `workspace.list` names it, instead of the focused one. Host API 1.6. */
+    workspaceId: z.string().min(1).max(1024).optional()
+  })
+  .optional()
 const agentsListResult = z.object({
   agents: z
     .array(
@@ -53,9 +58,9 @@ export const PLUGIN_PANEL_BRIDGE_API = {
   }),
   'agents.list': spec({
     summary:
-      'The agents in the focused workspace: their terminal, title, agent kind and status. `agent.status.changed` reports each change after.',
+      'The agents in the focused workspace, or in the workspace `workspaceId` names (an id from `workspace.list`; host API 1.6): their terminal, title, agent kind and status. `agent.status.changed` reports each change after.',
     since: 2,
-    scope: 'active-workspace',
+    scope: 'any-workspace',
     capability: 'agent:read',
     mutation: false,
     surfaces: ALL_SURFACES,

@@ -24,6 +24,7 @@ import {
   type PluginStatusBarServices
 } from './plugin-host-status-bar-method-bindings'
 import {
+  listedWorkspaceWorktreeId,
   PLUGIN_WORKSPACE_ACTION_HANDLERS,
   type PluginRuntimeRpc
 } from './plugin-host-workspace-method-bindings'
@@ -138,18 +139,16 @@ const HANDLERS: Record<PluginHostMethodName, BoundPluginHostMethod> = {
       : []
     return projectPluginWorkspaceContext(context, terminals)
   }),
-  'agents.list': bind(api['agents.list'], async (_params, { services }) => {
-    const context = await services.resolveActiveWorktreeContext()
-    if (!context) {
+  'agents.list': bind(api['agents.list'], async (params, { services, scope }) => {
+    const worktreeId = params?.workspaceId
+      ? await listedWorkspaceWorktreeId(services, params.workspaceId, scope.signal)
+      : (await services.resolveActiveWorktreeContext())?.worktreeId
+    if (!worktreeId) {
       return { agents: [] }
     }
-    const terminals = await services.listWorktreeTerminals(context.worktreeId).catch(() => [])
+    const terminals = await services.listWorktreeTerminals(worktreeId).catch(() => [])
     return {
-      agents: projectPluginWorkspaceAgents(
-        context.worktreeId,
-        terminals,
-        services.listAgentStatuses()
-      )
+      agents: projectPluginWorkspaceAgents(worktreeId, terminals, services.listAgentStatuses())
     }
   }),
   'terminal.sendText': bind(api['terminal.sendText'], async (params, { services, scope }) => {
